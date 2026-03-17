@@ -46,6 +46,7 @@ Located in `observability/`:
 5. **05-promotion-governance** — Promotion path, approval state
 6. **06-supply-chain-artifact-lineage** — Image digest, SBOM
 7. **07-executive-compliance-audit** — Audit trail, control evidence
+8. **08-objective3-kpis** — Objective 3 KPIs (promotion success, hydration, AI tab, satisfaction)
 
 ## Easy Button
 

@@ -15,6 +15,16 @@ Achieve ≥90% GitOps promotions handled automatically; AI tab actionable for al
 - KPI validation scripts
 - KPI dashboards and reporting
 
+## Grafana Dashboard
+
+`observability/dashboards/deployment-intelligence/08-objective3-kpis.json` — Objective 3 KPI dashboard with:
+- **Promotion success rate** — Argo CD `argocd_app_sync_total` (works when Prometheus scrapes Argo CD)
+- **Hydration efficiency** — requires `gitops_hydration_latency_minutes` metric
+- **AI tab utilization** — requires `gitops_ai_tab_utilization_ratio` metric
+- **User satisfaction** — requires `gitops_user_satisfaction_score` metric
+
+Provision via Grafana: point provisioning to `observability/dashboards/provisioning/dashboards.yaml`.
+
 ## KPIs
 
 | KPI | Target | Measurement |
