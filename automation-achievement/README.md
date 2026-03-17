@@ -36,9 +36,15 @@ automation-achievement/
 ## Usage
 
 ```bash
-# Validate promotion success rate (queries Argo CD / Prometheus)
+# Validate all KPIs (mock mode - no real systems required)
 python scripts/validate-kpis.py
 
 # Check hydration efficiency
 python scripts/validate-hydration-latency.py
+
+# When real systems available: use --no-mock to query Prometheus/Git
+python scripts/validate-kpis.py --no-mock --prometheus-url http://prometheus:9090
+python scripts/validate-hydration-latency.py --no-mock
 ```
+
+Mock mode uses simulated data so KPIs can be validated without Prometheus, Argo CD, or analytics. Wire to real systems by implementing the TODO sections in each script.
