@@ -172,6 +172,8 @@ Inspect `platform/`, `platform/apps/`, `platform/environments/`. See [docs/examp
 4. Inspect promotion result (blocked or approved)
 5. See [5-Minute Platform Demo](#5-minute-platform-demo) above for full flow
 
+**To capture platform-demo.png:** Run `./scripts/demo-screenshot.sh` and screenshot the terminal. Save to `docs/images/platform-demo.png`. See [docs/images/README.md](docs/images/README.md).
+
 ### Deployment (Advanced)
 
 ```bash
