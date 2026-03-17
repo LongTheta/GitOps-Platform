@@ -1,0 +1,25 @@
+# Org baseline policy - integration point for OPA/Gatekeeper/Kyverno
+# This file documents expected policy; actual enforcement is in the policy engine.
+#
+# Expected checks:
+# - Resource limits on all containers
+# - Required labels (app, environment)
+# - No latest tag in production
+# - Namespace exists before deployment
+#
+# Integration: ai-devsecops-policy-enforcement-agent or OPA/Gatekeeper
+# can validate manifests against these expectations during PR or admission.
+
+apiVersion: policy.example.com/v1
+kind: PolicyPack
+metadata:
+  name: org-baseline
+spec:
+  description: Organization baseline for all workloads
+  rules:
+    - name: resource-limits
+      description: All containers must have resource limits
+    - name: required-labels
+      description: app and environment labels required
+    - name: no-latest-in-prod
+      description: Production must use image digest, not :latest

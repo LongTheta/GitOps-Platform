@@ -1,19 +1,20 @@
 # GitOps Platform
 
-A GitOps platform implementing Manifest Hydrator, GitOps Promoter, AI Recommendations Tab, Automation Achievement, Skills installer, and Deployment Monitoring. Aligns with GitOps-Practices.
+An enterprise-style GitOps platform repository with environment separation, promotion workflows, policy enforcement integration points, observability scaffolding, and a clear self-service operating model.
 
-## Overview
+## What This Repo Is
 
-This project delivers the core capabilities for advancing GitOps practices through automated branching and AI-enhanced UI customizations:
+This repository is the **source of truth** for the GitOps platform. It defines:
 
-| Component | Deliverable |
-|-----------|-------------|
-| Manifest Hydrator | Argo CD hydrator config; DRY → hydrated manifests → Git branches |
-| GitOps Promoter | Automated staging→prod promotion with approvals |
-| AI Recommendations Tab | Argo CD UI extension + MCP backend |
-| Automation Achievement | KPI validation; ≥90% promotion automation |
-| Skills installer | Code-server setup; Skills provisioning; Git config |
-| Deployment Monitoring | Grafana dashboards; deployment traceability; NIST SP 800-137 |
+- **Environment separation** — dev, stage, prod with distinct config and approval gates
+- **Promotion workflows** — dev → stage → prod with manual approval for production
+- **Policy enforcement** — integration points for OPA, Gatekeeper, or AI policy agents
+- **Observability** — deployment traceability, DORA metrics, compliance dashboards
+- **Self-service** — golden path for onboarding new applications
+
+## Why It Exists
+
+To provide a **platform operating model**—not just bootstrap code—that teams can use day to day. Promotion-aware, policy-aware, observable, contributor-friendly, and extensible for regulated environments.
 
 ## Repository Structure
 
@@ -21,93 +22,118 @@ This project delivers the core capabilities for advancing GitOps practices throu
 gitops-platform/
 ├── README.md
 ├── PRINCIPLES.md
-├── manifest-hydrator/       # Argo CD Source Hydrator
-│   ├── README.md
-│   ├── config/
-│   └── examples/
-├── gitops-promoter/         # GitOps Promoter
-│   ├── README.md
-│   ├── config/
-│   └── examples/
-├── ai-recommendations-tab/  # Argo CD UI extension + MCP
-│   ├── README.md
-│   ├── extension/
-│   └── mcp-backend/
-├── automation-achievement/  # KPI validation
-│   ├── README.md
-│   └── scripts/
-├── skills-installer/        # Code-server + Skills
-│   ├── README.md
-│   ├── config/
-│   └── scripts/
-├── observability/           # Deployment Monitoring (Easy Button)
-│   ├── dashboards/
-│   ├── dashboard-requests/
-│   ├── generators/
-│   └── schemas/
-└── docs/
+├── docs/                    # Platform operating model
+│   ├── ARCHITECTURE.md
+│   ├── OPERATING-MODEL.md
+│   ├── PROMOTION-WORKFLOW.md
+│   ├── POLICY-ENFORCEMENT.md
+│   ├── OBSERVABILITY.md
+│   ├── SELF-SERVICE.md
+│   ├── DEMO-FLOW.md
+│   └── AI-POLICY-INTEGRATION.md
+├── platform/
+│   ├── environments/       # dev, stage, prod kustomizations
+│   ├── apps/               # Applications with base + overlays
+│   │   └── example-app/
+│   ├── argo/               # Argo CD projects, applications
+│   ├── policies/           # Policy packs (integration points)
+│   ├── promotion/          # Promotion workflow docs
+│   └── self-service/       # Templates, onboarding
+├── manifest-hydrator/       # Argo CD Source Hydrator (DRY → hydrated)
+├── gitops-promoter/        # Promotion strategy (dev→stage→prod)
+├── ai-recommendations-tab/  # Argo CD UI extension + MCP backend
+├── automation-achievement/ # KPI validation scripts
+├── skills-installer/       # Code-server + Skills provisioning
+├── observability/          # Dashboards, Easy Button, generators
+├── scripts/                # validate.sh, promote.sh, bootstrap.sh
+├── examples/               # insecure, secure, promotion-flow
+└── .github/workflows/      # validate.yml
 ```
+
+## How Environments Work
+
+| Environment | Purpose | Approval |
+|-------------|---------|----------|
+| **dev** | Fast iteration | Auto |
+| **stage** | Pre-production validation | Auto |
+| **prod** | Production | Manual |
+
+See [docs/PROMOTION-WORKFLOW.md](docs/PROMOTION-WORKFLOW.md).
+
+## How Promotion Works
+
+1. Merge to main → Manifest Hydrator hydrates → pushes to env branches
+2. GitOps Promoter manages promotion (dev → stage → prod)
+3. Production requires manual approval (`autoMerge: false`)
+
+See [docs/PROMOTION-WORKFLOW.md](docs/PROMOTION-WORKFLOW.md).
+
+## Where Policies Fit
+
+- **platform/policies/** — Policy packs (org-baseline, promotion-policy, fedramp-moderate)
+- **PR validation** — CI runs `scripts/validate.sh`; policy engine can block merge
+- **Promotion gate** — Policy checks before prod promotion
+
+See [docs/POLICY-ENFORCEMENT.md](docs/POLICY-ENFORCEMENT.md).
+
+## Where Observability Fits
+
+- **observability/dashboards/** — Deployment timeline, pipeline health, GitOps integrity, etc.
+- **Easy Button** — App teams submit minimal config; platform generates dashboards
+- **DORA metrics** — Deployment frequency, lead time, change failure rate, MTTR
+
+See [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md).
+
+## How to Onboard an App
+
+1. Copy template from `platform/self-service/templates/app-template/`
+2. Add base + overlays (dev, stage, prod)
+3. Add Argo CD Application in `platform/argo/applications/`
+4. Submit PR → policy check → merge → promotion follows workflow
+
+See [docs/SELF-SERVICE.md](docs/SELF-SERVICE.md).
 
 ## Quick Start
 
-### Manifest Hydrator
 ```bash
-# Deploy Argo CD with hydrator enabled
+# Validate platform structure and manifests
+./scripts/validate.sh
+./scripts/policy-check.sh
+
+# Bootstrap (validate + policy check + summary)
+./scripts/bootstrap.sh
+
+# Deploy components
 kubectl apply -f manifest-hydrator/config/
+kubectl apply -f gitops-promoter/config/   # See gitops-promoter/config/README.md for setup
+kubectl apply -f platform/argo/
+
+# Deploy observability (Grafana dashboards)
+./scripts/deploy-observability.sh
 ```
 
-### GitOps Promoter
-```bash
-# Deploy GitOps Promoter
-kubectl apply -f gitops-promoter/config/
-```
+## AI Integration
 
-### AI Recommendations Tab
-```bash
-# Build and deploy the Argo CD extension
-cd ai-recommendations-tab/extension && npm run build
-```
-
-### KPI Validation
-```bash
-# Run promotion success check
-python automation-achievement/scripts/validate-kpis.py
-```
-
-### Skills Installer
-```bash
-# Provision Skills to code-server
-./skills-installer/scripts/setup-skills.sh
-```
-
-### Deployment Monitoring
-```bash
-# Generate dashboard from request
-cd observability && python generators/generate-dashboard-from-request.py dashboard-requests/example-app-overview.yaml
-```
-
-## Key Performance Indicators
-
-| KPI | Target |
-|-----|--------|
-| Promotion success rate | ≥90% without manual intervention |
-| Hydration efficiency | <5 minutes from config change to hydrated commit |
-| AI tab utilization | ≥70% of Argo CD app views |
-| User satisfaction | ≥4/5 from feedback |
-
-## Federal DevSecOps Alignment
-
-Aligns with the seven GitOps capabilities: CI/CD orchestration, GitOps/configuration as code, security scanning, promotion governance, observability, identity/secrets, policy as code. Maps to NIST SP 800-137, AU-2, AU-6, SI-4, CA-7.
+This repo can integrate with `ai-devsecops-policy-enforcement-agent` or similar for PR validation, policy checks on promotion, and remediation comments. Integration is optional; see [docs/AI-POLICY-INTEGRATION.md](docs/AI-POLICY-INTEGRATION.md).
 
 ## Documentation
 
-- [PRINCIPLES.md](PRINCIPLES.md) — Design principles
-- [manifest-hydrator/README.md](manifest-hydrator/README.md)
-- [gitops-promoter/README.md](gitops-promoter/README.md)
-- [ai-recommendations-tab/README.md](ai-recommendations-tab/README.md)
-- [automation-achievement/README.md](automation-achievement/README.md)
-- [skills-installer/README.md](skills-installer/README.md)
-- [observability/README.md](observability/README.md)
+| Doc | Purpose |
+|-----|---------|
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | High-level platform architecture |
+| [OPERATING-MODEL.md](docs/OPERATING-MODEL.md) | Day-to-day workflows |
+| [PROMOTION-WORKFLOW.md](docs/PROMOTION-WORKFLOW.md) | Promotion between environments |
+| [POLICY-ENFORCEMENT.md](docs/POLICY-ENFORCEMENT.md) | Policy checks and blocking |
+| [OBSERVABILITY.md](docs/OBSERVABILITY.md) | Metrics and dashboards |
+| [SELF-SERVICE.md](docs/SELF-SERVICE.md) | App onboarding |
+| [DEMO-FLOW.md](docs/DEMO-FLOW.md) | 3–5 minute demo |
+| [AI-POLICY-INTEGRATION.md](docs/AI-POLICY-INTEGRATION.md) | AI policy agent integration |
+| [BRANCH-PROTECTION.md](docs/BRANCH-PROTECTION.md) | Require validation before merge |
+| [RUNBOOK.md](docs/RUNBOOK.md) | Emergency procedures, manual override |
+
+## Federal DevSecOps Alignment
+
+Aligns with GitOps capabilities: CI/CD orchestration, config as code, security scanning, promotion governance, observability, identity/secrets, policy as code. Maps to NIST SP 800-137, AU-2, AU-6, SI-4, CA-7. Per [PRINCIPLES.md](PRINCIPLES.md): use "aligns with," not "certified."
 
 ## Version
 

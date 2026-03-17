@@ -1,0 +1,8 @@
+# Stage environment - mirrors prod config, policy checks enabled
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../apps/example-app/overlays/stage
+  - ../../apps/backend-service/overlays/stage
+commonLabels:
+  environment: stage

@@ -1,0 +1,8 @@
+# Prod environment - manual approval, strict policy, immutable artifacts
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../apps/example-app/overlays/prod
+  - ../../apps/backend-service/overlays/prod
+commonLabels:
+  environment: prod

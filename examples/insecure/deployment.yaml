@@ -1,0 +1,31 @@
+# INSECURE EXAMPLE - Do not use in production
+# Demonstrates anti-patterns that policy should catch:
+# - No resource limits
+# - Uses :latest tag
+# - Single replica (no HA)
+# - No securityContext
+# - Runs as root (implicit)
+#
+# Policy checks should block this. See examples/secure/ for remediated version.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insecure-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insecure-app
+  template:
+    metadata:
+      labels:
+        app: insecure-app
+    spec:
+      containers:
+        - name: insecure-app
+          image: example.com/insecure-app:latest
+          ports:
+            - containerPort: 8080
+          # No resources: requests/limits
+          # No securityContext
+          # No readiness/liveness probes

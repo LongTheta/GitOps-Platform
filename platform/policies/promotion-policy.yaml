@@ -1,0 +1,23 @@
+# Promotion policy - integration point for policy engine
+# Validates manifests before promotion to production.
+#
+# Expected checks:
+# - Image uses digest (not tag) for prod
+# - Replicas >= 2 for HA in prod
+# - No debug or dev-only config in prod overlay
+#
+# Integration: Policy engine runs on promotion request or PR to prod branch.
+
+apiVersion: policy.example.com/v1
+kind: PolicyPack
+metadata:
+  name: promotion-policy
+spec:
+  description: Policy checks for production promotion
+  rules:
+    - name: immutable-artifact
+      description: Production must use image digest
+    - name: ha-replicas
+      description: Production replicas >= 2
+    - name: no-dev-config
+      description: No dev/debug config in prod

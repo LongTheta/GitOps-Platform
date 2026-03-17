@@ -1,0 +1,20 @@
+# FedRAMP Moderate alignment - placeholder
+# Documents control mapping; does not constitute certification.
+#
+# Per PRINCIPLES.md: Use "aligns with" or "supports", not "certified" or "compliant".
+#
+# Control mapping (example):
+# - AU-2: Audit events - observability dashboards, Argo CD audit
+# - AU-6: Audit review - deployment traceability
+# - SI-4: Monitoring - Prometheus/Grafana
+# - CA-7: Continuous monitoring - DORA metrics, drift detection
+#
+# Integration: Policy engine can enforce controls; this file is documentation.
+
+apiVersion: policy.example.com/v1
+kind: PolicyPack
+metadata:
+  name: fedramp-moderate
+spec:
+  description: FedRAMP Moderate control alignment (documentation only)
+  rules: []

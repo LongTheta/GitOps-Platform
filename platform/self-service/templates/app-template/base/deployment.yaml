@@ -1,0 +1,30 @@
+# Copy this template to platform/apps/<your-app>/base/
+# Replace <APP_NAME> with your application name
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <APP_NAME>
+  labels:
+    app: <APP_NAME>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <APP_NAME>
+  template:
+    metadata:
+      labels:
+        app: <APP_NAME>
+    spec:
+      containers:
+        - name: <APP_NAME>
+          image: example.com/<APP_NAME>:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

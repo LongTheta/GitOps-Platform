@@ -1,0 +1,24 @@
+# Prod: immutable digest, production replicas
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: prod
+resources:
+  - ../../base
+patches:
+  - target:
+      kind: Deployment
+      name: example-app
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: example-app
+      spec:
+        replicas: 3
+        template:
+          spec:
+            containers:
+              - name: example-app
+                image: example.com/example-app@sha256:0000000000000000000000000000000000000000000000000000000000000000
+commonLabels:
+  environment: prod
