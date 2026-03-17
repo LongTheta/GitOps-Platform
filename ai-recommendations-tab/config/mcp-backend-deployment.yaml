@@ -1,0 +1,57 @@
+# MCP Backend Deployment for AI Recommendations
+#
+# Deploy this to run the recommendations backend in-cluster.
+# The Argo CD Proxy Extension will forward requests to this service.
+#
+# Build and push the image first:
+#   cd ai-recommendations-tab/mcp-backend && docker build -t ai-recommendations-backend:0.1 .
+#   # For kind: kind load docker-image ai-recommendations-backend:0.1
+#   # For other clusters: push to your registry and update image below
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-recommendations-backend
+  namespace: argocd
+  labels:
+    app: ai-recommendations-backend
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: ai-recommendations-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-recommendations-backend
+  namespace: argocd
+  labels:
+    app: ai-recommendations-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-recommendations-backend
+  template:
+    metadata:
+      labels:
+        app: ai-recommendations-backend
+    spec:
+      containers:
+        - name: backend
+          image: ai-recommendations-backend:0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10

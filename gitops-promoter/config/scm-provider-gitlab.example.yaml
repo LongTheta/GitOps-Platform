@@ -1,0 +1,21 @@
+# GitOps Promoter - ScmProvider for GitLab
+# Replace placeholders with your GitLab app credentials
+#
+# Create GitLab App: Settings → Applications → New application
+# Scopes: api, read_repository, write_repository
+
+apiVersion: argoproj.io/v1alpha1
+kind: ScmProvider
+metadata:
+  name: gitlab
+  namespace: gitops-promoter
+spec:
+  type: gitlab
+  gitlab:
+    baseUrl: https://gitlab.example.com
+    # Credentials from Secret
+    credentials:
+      secretRef:
+        name: gitlab-credentials
+        namespace: gitops-promoter
+        key: token

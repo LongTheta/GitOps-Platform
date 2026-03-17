@@ -1,0 +1,35 @@
+# Example Application with sourceHydrator
+# DRY config → hydrated manifests → push to environment/<env>-next branch
+# Contract: hydrator.metadata must include {"drySha": "<commit SHA>"} for GitOps Promoter
+#
+# Replace placeholders: <repo-url>, <path>, <env>, <target-revision>
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # DRY source (Helm/Kustomize/CMP)
+    repoURL: https://example.com/my-platform/gitops-repo.git
+    path: apps/my-app
+    targetRevision: HEAD
+  sourceHydrator:
+    drySource:
+      repoURL: https://example.com/my-platform/gitops-repo.git
+      path: apps/my-app
+      targetRevision: HEAD
+    hydrateTo:
+      targetBranch: environment/staging-next  # Staging branch for GitOps Promoter
+      path: hydrated/staging/my-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-namespace

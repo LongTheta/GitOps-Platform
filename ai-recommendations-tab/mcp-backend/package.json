@@ -1,0 +1,13 @@
+{
+  "name": "ai-recommendations-mcp-backend",
+  "version": "0.1.0",
+  "description": "MCP backend for Argo CD AI Recommendations tab",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

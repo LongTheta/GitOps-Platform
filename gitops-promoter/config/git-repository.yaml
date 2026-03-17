@@ -1,0 +1,17 @@
+# GitOps Promoter - GitRepository
+# Links to the GitOps repo that contains hydrated manifests
+# Replace repoURL with your actual repo
+
+apiVersion: argoproj.io/v1alpha1
+kind: GitRepository
+metadata:
+  name: gitops-repo
+  namespace: gitops-promoter
+spec:
+  url: https://example.com/my-platform/gitops-repo.git
+  branch: main
+  # Credentials for clone (separate from ScmProvider for PR operations)
+  credentials:
+    secretRef:
+      name: gitops-repo-credentials
+      namespace: gitops-promoter

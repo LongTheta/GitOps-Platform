@@ -1,0 +1,29 @@
+# Argo CD Proxy Extension configuration for AI Recommendations
+#
+# NOTE: If you have existing argocd-cmd-params-cm or argocd-cm, merge these
+# values into your ConfigMaps instead of replacing them.
+#
+# For in-cluster deployment: use mcp-backend-deployment.yaml first.
+# For local dev: port-forward the backend and use host.docker.internal or host IP.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+data:
+  server.enable.proxy.extension: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  extension.config.ai-recommendations: |
+    connectionTimeout: 5s
+    keepAlive: 15s
+    idleConnectionTimeout: 60s
+    maxIdleConnections: 10
+    services:
+    - url: http://ai-recommendations-backend.argocd.svc.cluster.local:8080

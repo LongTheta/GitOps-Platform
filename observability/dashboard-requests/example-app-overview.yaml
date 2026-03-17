@@ -1,0 +1,7 @@
+# Example dashboard request for my-app
+# Conforms to: schemas/dashboard-request.schema.json
+
+application: my-app
+namespace: my-namespace
+template: service-overview
+panels: []

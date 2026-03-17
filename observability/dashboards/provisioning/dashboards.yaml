@@ -1,0 +1,30 @@
+# Grafana dashboard provisioning config
+# Point Grafana to load dashboards from the deployment-intelligence and generated directories.
+# As of March 2026. Compatible with Grafana 11.x.
+#
+# Usage: Configure grafana.ini or environment to use this provisioning path.
+# Example: GF_PATHS_PROVISIONING=/path/to/gitops-platform/observability/dashboards/provisioning
+
+apiVersion: 1
+
+providers:
+  - name: 'deployment-intelligence'
+    orgId: 1
+    folder: 'Deployment Intelligence'
+    folderUid: 'deployment-intelligence'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards/deployment-intelligence
+      # In GitOps: mount this path from the repo or sync via Argo CD
+
+  - name: 'generated'
+    orgId: 1
+    folder: 'Generated'
+    folderUid: 'generated'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards/generated

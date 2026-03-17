@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://observability.platform.io/schemas/dashboard-request/v1.json",
+  "title": "DashboardRequest",
+  "description": "Dashboard request for the Observability Easy Button framework",
+  "type": "object",
+  "required": ["application", "namespace", "template"],
+  "properties": {
+    "application": {
+      "type": "string",
+      "description": "Application name"
+    },
+    "namespace": {
+      "type": "string",
+      "description": "Kubernetes namespace"
+    },
+    "template": {
+      "type": "string",
+      "enum": ["service-overview", "golden-signals"],
+      "description": "Dashboard template to use"
+    },
+    "panels": {
+      "type": "array",
+      "description": "Optional panel overrides or additions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "type": { "type": "string" },
+          "targets": { "type": "array" }
+        }
+      }
+    },
+    "team": {
+      "type": "string",
+      "description": "Owning team (optional override)"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["dev", "staging", "prod"],
+      "description": "Environment (optional override)"
+    }
+  }
+}

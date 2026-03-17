@@ -1,0 +1,12 @@
+# Dashboard Request Template
+# Copy this file to dashboard-requests/<name>.yaml and fill in the values.
+# Conforms to: schemas/dashboard-request.schema.json
+
+application: my-app
+namespace: my-namespace
+template: service-overview  # Options: service-overview, golden-signals
+panels: []  # Optional: panel overrides or additions
+
+# Optional overrides:
+# team: platform-team
+# environment: prod

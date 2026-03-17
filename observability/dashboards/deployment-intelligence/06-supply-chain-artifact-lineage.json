@@ -1,0 +1,59 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "content": "This dashboard integrates with external supply chain tools (e.g., Cosign, Grype, Trivy) for image digest, SBOM, and attestation data. Argo CD metrics do not include image-level metadata. Configure your supply chain scanner to export Prometheus metrics and add panels here.",
+        "mode": "markdown"
+      },
+      "title": "Supply Chain Integration",
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "fieldConfig": { "defaults": {}, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "id": 2,
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" } },
+      "targets": [
+        {
+          "expr": "argocd_app_k8s_request_total",
+          "legendFormat": "{{name}} - {{verb}}"
+        }
+      ],
+      "title": "K8s Request Volume (Reconciliation Activity)",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["deployment-intelligence", "supply-chain", "artifact-lineage"],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "name": "datasource",
+        "type": "datasource",
+        "pluginId": "prometheus"
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Supply Chain / Artifact Lineage",
+  "uid": "supply-chain-artifact-lineage",
+  "version": 1
+}

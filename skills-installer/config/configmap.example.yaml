@@ -1,0 +1,15 @@
+# Example ConfigMap for code-server Skills installer
+# Non-sensitive config. Inject via envFrom.
+# Use separate ConfigMaps for low-side and high-side.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: code-server-config
+  namespace: default
+data:
+  baseDomain: example.com
+  GITLAB_URL: https://gitlab.example.com
+  GIT_USER_NAME: code-server
+  GIT_USER_EMAIL: codeserver@example.com
+# Secret (GITLAB_TOKEN) stored separately - never in ConfigMap

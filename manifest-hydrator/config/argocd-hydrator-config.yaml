@@ -1,0 +1,19 @@
+# Argo CD Hydrator Configuration
+# Enable Source Hydrator and Commit Server for M5.1
+# As of March 2026. Argo CD v3.2+ required (non-root output paths).
+#
+# Apply to argocd-cmd-params-cm or equivalent ConfigMap.
+# Reference: https://argo-cd.readthedocs.io/en/stable/proposals/manifest-hydrator/
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+data:
+  # Enable Source Hydrator
+  hydrator.enabled: "true"
+  # Commit Server enables pushing hydrated manifests to Git
+  # (Commit Server is part of Argo CD when hydrator is enabled)

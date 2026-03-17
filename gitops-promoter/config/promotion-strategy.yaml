@@ -1,0 +1,32 @@
+# GitOps Promoter - PromotionStrategy
+# Defines environment flow: development → staging → production
+# Production: autoMerge false (manual approval required)
+#
+# Requires: ScmProvider, GitRepository. Apply after installing GitOps Promoter.
+# Reference: https://gitops-promoter.readthedocs.io/en/latest/tutorial-argocd-apps/
+
+apiVersion: argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: default
+  namespace: gitops-promoter
+spec:
+  gitRepository:
+    name: gitops-repo
+    namespace: gitops-promoter
+  scmProvider:
+    name: gitlab
+    namespace: gitops-promoter
+  environments:
+    - name: development
+      branch: environment/development
+      stagingBranch: environment/development-next
+      autoMerge: true
+    - name: staging
+      branch: environment/staging
+      stagingBranch: environment/staging-next
+      autoMerge: true
+    - name: production
+      branch: environment/production
+      stagingBranch: environment/production-next
+      autoMerge: false  # Manual approval required for production
