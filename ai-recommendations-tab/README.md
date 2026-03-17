@@ -1,7 +1,5 @@
 # M5.3 – AI Recommendations Tab
 
-**Epic:** M5.3 | **Quarter:** Q3 2026
-
 Custom Argo CD UI extension for an "AI Recommendations" tab, pulling real-time suggestions from MCP agents on app health, optimizations, and fixes.
 
 ## Key Result

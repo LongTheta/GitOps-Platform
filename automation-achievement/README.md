@@ -1,7 +1,5 @@
 # M5.4 – Automation Achievement
 
-**Epic:** M5.4 | **Quarter:** Q4 2026
-
 Achieve ≥90% GitOps promotions handled automatically; AI tab actionable for all monitored applications; validate all KPIs.
 
 ## Key Result

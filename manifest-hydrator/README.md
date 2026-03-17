@@ -1,7 +1,5 @@
 # M5.1 – Manifest Hydrator
 
-**Epic:** M5.1 | **Quarter:** Q1 2026
-
 Configure Argo CD Source Hydrator to automate hydration and commits to dedicated Git branches from DRY configs.
 
 ## Key Result

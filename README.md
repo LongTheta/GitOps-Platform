@@ -6,14 +6,14 @@ A GitOps platform implementing Manifest Hydrator, GitOps Promoter, AI Recommenda
 
 This project delivers the core capabilities for advancing GitOps practices through automated branching and AI-enhanced UI customizations:
 
-| Component | Quarter | Deliverable |
-|-----------|---------|-------------|
-| Manifest Hydrator | Q1 | Argo CD hydrator config; DRY → hydrated manifests → Git branches |
-| GitOps Promoter | Q2 | Automated staging→prod promotion with approvals |
-| AI Recommendations Tab | Q3 | Argo CD UI extension + MCP backend |
-| Automation Achievement | Q4 | KPI validation; ≥90% promotion automation |
-| Skills installer | — | Code-server setup; Skills provisioning; Git config |
-| Deployment Monitoring | — | Grafana dashboards; deployment traceability; NIST SP 800-137 |
+| Component | Deliverable |
+|-----------|-------------|
+| Manifest Hydrator | Argo CD hydrator config; DRY → hydrated manifests → Git branches |
+| GitOps Promoter | Automated staging→prod promotion with approvals |
+| AI Recommendations Tab | Argo CD UI extension + MCP backend |
+| Automation Achievement | KPI validation; ≥90% promotion automation |
+| Skills installer | Code-server setup; Skills provisioning; Git config |
+| Deployment Monitoring | Grafana dashboards; deployment traceability; NIST SP 800-137 |
 
 ## Repository Structure
 

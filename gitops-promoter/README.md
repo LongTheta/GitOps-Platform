@@ -1,7 +1,5 @@
 # M5.2 – GitOps Promoter
 
-**Epic:** M5.2 | **Quarter:** Q2 2026
-
 Deploy GitOps Promoter to enable automated promotions across environments (staging → production) with checks and approvals.
 
 ## Key Result
