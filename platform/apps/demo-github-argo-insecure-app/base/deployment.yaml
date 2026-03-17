@@ -1,0 +1,27 @@
+# Source: LongTheta/demo-github-argo-insecure-app/k8s/deployment.yaml
+# Intentionally weak for policy enforcement demo — :latest, no resources
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+  namespace: demo-app
+  labels:
+    app: demo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo-app
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+      containers:
+        - name: app
+          image: registry.example.com/demo-gitlab-argo-insecure-app:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: FLASK_ENV
+              value: "production"

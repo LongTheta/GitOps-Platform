@@ -1,0 +1,30 @@
+# Stage overlay — promotion gate
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage
+resources:
+  - ../../base
+patches:
+  - target:
+      kind: Namespace
+      name: demo-app
+    patch: |-
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: stage
+  - target:
+      kind: Deployment
+      name: demo-app
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: demo-app
+      spec:
+        replicas: 2
+        template:
+          spec:
+            containers:
+              - name: app
+                image: registry.example.com/demo-gitlab-argo-insecure-app:staging

@@ -1,0 +1,25 @@
+# Argo CD Application - demo-github-argo-insecure-app (stage)
+# Promotion: dev → stage (policy must pass)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-github-argo-insecure-app-stage
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: demo-github-argo-insecure-app
+    environment: stage
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/LongTheta/gitops-platform.git
+    path: platform/apps/demo-github-argo-insecure-app/overlays/stage
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

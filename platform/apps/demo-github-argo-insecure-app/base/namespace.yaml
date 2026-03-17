@@ -1,0 +1,7 @@
+# Source: LongTheta/demo-github-argo-insecure-app/k8s/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app

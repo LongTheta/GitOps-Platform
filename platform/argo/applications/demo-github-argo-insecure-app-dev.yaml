@@ -1,0 +1,26 @@
+# Argo CD Application - demo-github-argo-insecure-app (dev)
+# Platform governs this app; source: LongTheta/demo-github-argo-insecure-app
+# Path: platform overlay (platform applies env-specific patches to app manifests)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-github-argo-insecure-app-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: demo-github-argo-insecure-app
+    environment: dev
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/LongTheta/gitops-platform.git
+    path: platform/apps/demo-github-argo-insecure-app/overlays/dev
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

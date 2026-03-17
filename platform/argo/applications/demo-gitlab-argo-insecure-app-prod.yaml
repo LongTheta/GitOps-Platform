@@ -1,0 +1,24 @@
+# Argo CD Application - demo-gitlab-argo-insecure-app (prod)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-gitlab-argo-insecure-app-prod
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: demo-gitlab-argo-insecure-app
+    environment: prod
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/LongTheta/gitops-platform.git
+    path: platform/apps/demo-gitlab-argo-insecure-app/overlays/prod
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

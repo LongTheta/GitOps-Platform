@@ -1,0 +1,18 @@
+# Source metadata for platform-managed application
+# This platform governs and promotes this external application repository.
+---
+app_name: demo-gitlab-argo-insecure-app
+source_repo: LongTheta/demo-gitlab-argo-insecure-app
+source_url: https://gitlab.com/LongTheta/demo-gitlab-argo-insecure-app
+source_branch: master
+source_path: k8s
+managed_by: gitops-platform
+environments:
+  - dev
+  - stage
+  - prod
+promotion_model: dev → stage → prod (prod requires manual approval)
+notes: |
+  GitLab variant of insecure app for policy enforcement demo.
+  Same pattern as demo-github-argo-insecure-app — policy blocks promotion.
+  Platform validates, promotes, and deploys via Argo CD.

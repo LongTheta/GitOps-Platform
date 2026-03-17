@@ -4,7 +4,7 @@ An enterprise GitOps platform with enforced promotion workflows, policy-driven c
 
 ---
 
-## Example Platform Run (Real Workflow)
+## Example Platform Run
 
 ![Platform Demo](docs/images/platform-demo.png)
 
@@ -15,41 +15,73 @@ An enterprise GitOps platform with enforced promotion workflows, policy-driven c
 ```
 ❌ Promotion Blocked: FAILED POLICY CHECK
 Environment: stage → prod
-Application: example-app
 
-Reasons:
-  - Missing approval (production requires manual approval)
-  - Policy violation: unpinned image (use digest, not :latest)
-  - Drift detected in Argo CD (cluster state differs from Git)
-
-Action: Fix policy violations, obtain approval, resolve drift. Then retry promotion.
+Reason:
+- Unpinned container image
+- Missing approval
+- Drift detected in Argo CD
 ```
 
 ### What This Proves
 
-- **GitOps promotion enforcement works** — Production is gated; promotion is controlled, not automatic
-- **Policy can block production** — Unpinned images, missing limits, and drift block promotion
-- **Platform produces actionable outputs** — Clear failure reasons; deterministic behavior
-- **System behaves like a real CI/CD control plane** — Validation, policy, promotion, observability are integrated
+- **Promotion is enforced** (not automatic)
+- **Policy can block production**
+- **Platform produces actionable feedback**
+- **GitOps state and runtime drift are validated**
+
+---
+
+## ⚡ 5-Minute Platform Demo
+
+Fast, scannable, demo-friendly golden path:
+
+1. **Validate config**
+   ```bash
+   ./scripts/validate.sh
+   ```
+
+2. **Run policy check**
+   ```bash
+   ./scripts/policy-check.sh
+   ```
+
+3. **Simulate promotion**
+   ```bash
+   ./scripts/promote.sh dev stage
+   ```
+
+4. **Observe result:**
+   ```
+   ❌ Promotion Blocked
+   Reason:
+   - Policy failure
+   - Approval missing
+   ```
+
+5. **Fix issue and re-run promotion**
 
 ---
 
 ## Platform Workflow (End-to-End)
 
-1. **Developer commits** app config to `platform/apps/<app>/` (base + overlays)
-2. **Manifest Hydrator** renders environment-specific manifests; pushes to env branches
-3. **Argo CD** syncs desired state from Git to clusters
-4. **Policy Enforcement** validates:
-   - PRs (before merge)
-   - Promotions (before prod)
-5. **GitOps Promoter** handles:
-   - dev → stage → prod flow
-   - Approvals and checks (prod = manual)
-6. **Observability** tracks:
-   - Deployments (timeline, frequency)
-   - Drift (cluster vs Git)
-   - Failures (change failure rate, MTTR)
-7. **(Optional)** AI Recommendations assist review and remediation in Argo CD UI
+1. **Developer commits** app config
+2. **Hydrator** renders manifests
+3. **Argo CD** reconciles desired state
+4. **Policy engine** validates changes
+5. **Promoter** controls environment progression
+6. **Observability** tracks deployments and drift
+7. **AI agent** (optional) suggests fixes
+
+---
+
+## 🚫 What Blocks Promotion to Production
+
+Promotion will fail if:
+
+- Policy violations detected
+- Required approvals missing
+- Drift detected between Git and cluster
+- Artifact mismatch or unverified image
 
 ---
 
@@ -79,44 +111,32 @@ Promotion is **controlled**, not automatic. Requirements:
 | Approvals | GitOps Promoter (prod `autoMerge: false`) |
 | Artifact immutability | Policy (prod must use image digest) |
 
-### Promotion Blocked If
-
-- Policy fails (unpinned image, missing limits, etc.)
-- Approval missing (prod requires human approval)
-- Drift detected (cluster state ≠ Git)
-- Artifact mismatch (digest vs tag in prod)
-
 See [docs/PROMOTION-WORKFLOW.md](docs/PROMOTION-WORKFLOW.md).
 
 ---
 
-## Policy Enforcement Examples
-
-### Example Rule: No `:latest` in Production
+## Policy Enforcement Example
 
 ```yaml
 # platform/policies/promotion-policy.yaml
 rules:
-  - name: immutable-artifact
-    description: Production must use image digest
-    check: image must match @sha256:...
+  - name: require-pinned-images
+    description: All container images must be pinned
+    severity: high
 ```
 
-### Example Rule: Resource Limits Required
-
-```yaml
-# platform/policies/org-baseline.yaml
-rules:
-  - name: resource-limits
-    description: All containers must have resource limits
-    check: deployment.spec.template.spec.containers[].resources.limits
-```
-
-### Example Failure Message
+**Sample failure message:**
 
 ```
-ERROR: platform/apps/example-app/overlays/prod/kustomization.yaml contains :latest (use digest in prod)
+FAIL: image uses 'latest' tag — must be pinned
 ```
+
+### Additional Rules
+
+| Rule | Purpose |
+|------|---------|
+| `immutable-artifact` | Production must use image digest |
+| `resource-limits` | All containers must have resource limits |
 
 ### Where Enforcement Happens
 
@@ -129,38 +149,22 @@ ERROR: platform/apps/example-app/overlays/prod/kustomization.yaml contains :late
 
 ---
 
-## Quick Start (2 minutes)
+## Quick Start
 
-```bash
-# Validate platform structure and manifests
-./scripts/validate.sh
-./scripts/policy-check.sh
-```
+### Quick Start (2 minutes)
+
+- `./scripts/validate.sh` — validate platform structure and manifests
+- `./scripts/policy-check.sh` — run policy checks
 
 Inspect `platform/`, `platform/apps/`, `platform/environments/`. See [docs/example-outputs/](docs/example-outputs/) for expected output.
 
----
+### Platform Demo (5 minutes)
 
-## Platform Demo (5 minutes)
+- **validate** → `./scripts/validate.sh` and `./scripts/policy-check.sh`
+- **promote** → `./scripts/promote.sh dev stage` (or `./scripts/promote.sh stage prod`)
+- **observe result** → policy failures, promotion blocked, drift reports
 
-```bash
-# 1. Validate
-./scripts/validate.sh
-./scripts/policy-check.sh
-
-# 2. Dry-run promotion (requires kustomize or kubectl)
-ENV=prod ./scripts/promote.sh dry-run
-
-# 3. Check promotion config
-./scripts/promote.sh check
-
-# 4. Bootstrap (full validation + summary)
-./scripts/bootstrap.sh
-```
-
----
-
-## Deployment (Advanced)
+### Deployment (Advanced)
 
 ```bash
 # Deploy platform components
@@ -174,24 +178,60 @@ kubectl apply -f platform/argo/
 
 ---
 
-## Demo Repositories (Platform Consumers)
+## Platform Consumers
 
-These repos run **on** this platform; they demonstrate policy enforcement and promotion:
+This platform **governs and deploys** application repositories such as:
 
-| Repo | Purpose |
-|------|---------|
-| [demo-gitlab-argo-insecure-app](https://gitlab.com/example/demo-gitlab-argo-insecure-app) | Insecure app; policy blocks promotion |
-| [demo-github-argo-insecure-app](https://github.com/example/demo-github-argo-insecure-app) | Same pattern for GitHub |
+- [demo-github-argo-insecure-app](https://github.com/LongTheta/demo-github-argo-insecure-app)
+- [demo-gitlab-argo-insecure-app](https://gitlab.com/LongTheta/demo-gitlab-argo-insecure-app)
 
-*Add your demo repo URLs when available. They show the platform enforcing policy on consumer apps.*
+These application repos:
+
+- Define workloads and CI/CD behavior
+- Are validated by policy enforcement
+- Are promoted through environments by this platform
+- Are deployed via Argo CD
+
+Each app has `platform/apps/<app>/source.yaml` (metadata), overlays (dev/stage/prod), and Argo CD Applications in `platform/argo/applications/`.
 
 ---
 
-## Observability (Deployment Visibility)
+## How the Repos Connect
+
+```
+Application Repo (demo-github-argo-insecure-app, etc.)
+        │
+        ▼
+Policy Enforcement (scripts/policy-check.sh, AI agent)
+        │
+        ▼
+Platform Promotion Workflow (scripts/promote.sh, GitOps Promoter)
+        │
+        ▼
+Argo CD (syncs desired state from this platform repo)
+        │
+        ▼
+Cluster (dev, stage, prod namespaces)
+```
+
+1. **App repos are separate** from this platform repo — they define application code and manifests.
+2. **This repo is the control plane** — it references app manifests, applies overlays, and governs promotion.
+3. **AI enforcement** can plug in before promotion (PR validation, remediation comments).
+
+---
+
+## Observability
 
 ![Observability Dashboard](docs/images/observability-dashboard.png)
 
 *Placeholder: Deployment timeline, drift, DORA metrics. Add `docs/images/observability-dashboard.png` when available.*
+
+The platform provides:
+
+- **Deployment tracking** — timeline, frequency, commit-to-production
+- **Drift detection** — cluster state vs Git desired state
+- **Promotion visibility** — which changes moved where, when
+- **DORA-style metrics** — deployment frequency, lead time, change failure rate, MTTR
 
 | Metric | Purpose |
 |--------|---------|
@@ -234,8 +274,8 @@ gitops-platform/
 │   └── ...
 ├── platform/
 │   ├── environments/        # dev, stage, prod
-│   ├── apps/                # example-app, backend-service
-│   ├── argo/                # Projects, Applications
+│   ├── apps/                # example-app, backend-service, demo-github-*, demo-gitlab-*
+│   ├── argo/                # Projects, Applications (incl. demo app deployments)
 │   ├── policies/            # org-baseline, promotion-policy
 │   └── self-service/       # Templates, onboarding
 ├── manifest-hydrator/       # DRY → hydrated
@@ -270,6 +310,7 @@ See [docs/SELF-SERVICE.md](docs/SELF-SERVICE.md).
 | [OBSERVABILITY.md](docs/OBSERVABILITY.md) | Metrics and dashboards |
 | [SELF-SERVICE.md](docs/SELF-SERVICE.md) | App onboarding |
 | [DEMO-FLOW.md](docs/DEMO-FLOW.md) | 3–5 minute demo |
+| [PLATFORM-CONSUMERS.md](docs/PLATFORM-CONSUMERS.md) | How app repos are governed |
 | [AI-POLICY-INTEGRATION.md](docs/AI-POLICY-INTEGRATION.md) | AI policy agent integration |
 | [BRANCH-PROTECTION.md](docs/BRANCH-PROTECTION.md) | Require validation before merge |
 | [RUNBOOK.md](docs/RUNBOOK.md) | Emergency procedures |

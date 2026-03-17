@@ -1,0 +1,38 @@
+# Prod overlay — requires pinned image (digest), resource limits, approval
+# Policy blocks promotion if unpinned image or missing limits
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: prod
+resources:
+  - ../../base
+patches:
+  - target:
+      kind: Namespace
+      name: demo-app
+    patch: |-
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: prod
+  - target:
+      kind: Deployment
+      name: demo-app
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: demo-app
+      spec:
+        replicas: 3
+        template:
+          spec:
+            containers:
+              - name: app
+                image: registry.example.com/demo-github-argo-insecure-app@sha256:0000000000000000000000000000000000000000000000000000000000000000
+                resources:
+                  limits:
+                    memory: "256Mi"
+                    cpu: "500m"
+                  requests:
+                    memory: "128Mi"
+                    cpu: "100m"

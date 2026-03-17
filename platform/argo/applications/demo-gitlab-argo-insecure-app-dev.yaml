@@ -1,0 +1,25 @@
+# Argo CD Application - demo-gitlab-argo-insecure-app (dev)
+# Platform governs this app; source: LongTheta/demo-gitlab-argo-insecure-app (GitLab)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-gitlab-argo-insecure-app-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: demo-gitlab-argo-insecure-app
+    environment: dev
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/LongTheta/gitops-platform.git
+    path: platform/apps/demo-gitlab-argo-insecure-app/overlays/dev
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

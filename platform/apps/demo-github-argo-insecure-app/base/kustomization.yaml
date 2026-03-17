@@ -1,0 +1,8 @@
+# Base manifests — source: LongTheta/demo-github-argo-insecure-app k8s/
+# Platform overlays (dev/stage/prod) apply environment-specific patches.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml

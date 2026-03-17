@@ -11,10 +11,11 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
 usage() {
-  echo "Usage: $0 [check|dry-run]"
+  echo "Usage: $0 [check|dry-run|<from> <to>]"
   echo ""
-  echo "  check    - Verify promotion config (PromotionStrategy, branches)"
-  echo "  dry-run  - Dry-run kustomize for target env (requires ENV=dev|stage|prod)"
+  echo "  check         - Verify promotion config (PromotionStrategy, branches)"
+  echo "  dry-run       - Dry-run kustomize for target env (requires ENV=dev|stage|prod)"
+  echo "  <from> <to>   - Simulate promotion (e.g. dev stage, stage prod)"
   echo ""
   echo "Promotion is managed by GitOps Promoter. See gitops-promoter/config/"
   exit 1
@@ -22,6 +23,39 @@ usage() {
 
 cmd="${1:-}"
 case "$cmd" in
+  dev|stage|prod)
+    FROM="$cmd"
+    TO="${2:-}"
+    if [ -z "$TO" ] || [[ ! "$TO" =~ ^(dev|stage|prod)$ ]]; then
+      echo "Usage: $0 $FROM <to>   (to = dev|stage|prod)"
+      exit 1
+    fi
+    echo "==> Simulating promotion: $FROM → $TO"
+    # Run policy check; promotion blocks on failure
+    if ! "$SCRIPT_DIR/policy-check.sh" >/dev/null 2>&1; then
+      echo ""
+      echo "❌ Promotion Blocked"
+      echo "Reason:"
+      echo "- Policy failure"
+      echo "- Approval missing"
+      echo ""
+      echo "Fix policy violations, obtain approval, then retry."
+      exit 1
+    fi
+    # Prod requires manual approval
+    if [ "$TO" = "prod" ]; then
+      echo ""
+      echo "❌ Promotion Blocked"
+      echo "Reason:"
+      echo "- Approval missing (production requires manual approval)"
+      echo ""
+      exit 1
+    fi
+    echo "  OK: Promotion path $FROM → $TO validated"
+    if command -v kustomize >/dev/null 2>&1; then
+      kustomize build "platform/environments/$TO" >/dev/null 2>&1 && echo "  OK: Kustomize build succeeds for $TO" || true
+    fi
+    ;;
   check)
     echo "==> Checking promotion configuration..."
     if [ -f "gitops-promoter/config/promotion-strategy.yaml" ]; then
