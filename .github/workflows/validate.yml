@@ -7,13 +7,14 @@ on:
   pull_request:
     branches: [master, main]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup kustomize
         uses: imranismail/setup-kustomize@v2
@@ -33,6 +34,4 @@ jobs:
           done
 
       - name: Policy check
-        run: |
-          chmod +x scripts/policy-check.sh
-          ./scripts/policy-check.sh
+        run: python scripts/policy-enforcement-agent.py
