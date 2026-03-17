@@ -1,0 +1,14 @@
+==> Validating platform structure...
+==> Validating kustomize builds...
+  OK: platform/environments/dev
+  OK: platform/environments/stage
+  OK: platform/environments/prod
+  OK: platform/apps/example-app/overlays/dev
+  OK: platform/apps/example-app/overlays/stage
+  OK: platform/apps/example-app/overlays/prod
+  OK: platform/apps/backend-service/overlays/dev
+  OK: platform/apps/backend-service/overlays/stage
+  OK: platform/apps/backend-service/overlays/prod
+==> Policy placeholder check...
+
+Validation passed

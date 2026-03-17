@@ -1,0 +1,10 @@
+❌ Promotion Blocked: FAILED POLICY CHECK
+Environment: stage → prod
+Application: example-app
+
+Reasons:
+  - Missing approval (production requires manual approval)
+  - Policy violation: unpinned image (use digest, not :latest)
+  - Drift detected in Argo CD (cluster state differs from Git)
+
+Action: Fix policy violations, obtain approval, resolve drift. Then retry promotion.

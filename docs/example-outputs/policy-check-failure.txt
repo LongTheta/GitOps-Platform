@@ -1,0 +1,8 @@
+==> Policy check: prod overlays (no :latest, use digest)...
+  ERROR: platform/apps/example-app/overlays/prod/kustomization.yaml contains :latest (use digest in prod)
+
+==> Policy check: deployments have resource limits...
+  OK: platform/apps/example-app/base/deployment.yaml
+  ERROR: platform/apps/insecure-app/base/deployment.yaml missing resource limits
+
+Policy check failed with 2 error(s)
