@@ -1,6 +1,6 @@
 # GitOps Platform
 
-An enterprise GitOps platform with enforced promotion workflows, policy-driven controls, and observable deployment pipelines — not just infrastructure as code.
+An enterprise GitOps control plane with enforceable promotion workflows, policy-driven controls, and observable deployment behavior — not just infrastructure as code.
 
 ---
 
@@ -13,27 +13,27 @@ An enterprise GitOps platform with enforced promotion workflows, policy-driven c
 ### Terminal Output: Promotion Blocked
 
 ```
-❌ Promotion Blocked: FAILED POLICY CHECK
+Promotion Blocked: FAILED POLICY CHECK
 Environment: stage → prod
 
-Reason:
-- Unpinned container image
+Reasons:
+- Unpinned image
 - Missing approval
-- Drift detected in Argo CD
+- Drift detected
 ```
 
 ### What This Proves
 
-- **Promotion is enforced** (not automatic)
 - **Policy can block production**
-- **Platform produces actionable feedback**
-- **GitOps state and runtime drift are validated**
+- **Promotion is controlled, not automatic**
+- **The platform produces actionable outputs**
+- **GitOps runtime drift is part of the control model**
 
 ---
 
-## ⚡ 5-Minute Platform Demo
+## 5-Minute Platform Demo
 
-Fast, scannable, demo-friendly golden path:
+Golden-path flow using existing scripts:
 
 1. **Validate config**
    ```bash
@@ -43,14 +43,18 @@ Fast, scannable, demo-friendly golden path:
 2. **Run policy check**
    ```bash
    ./scripts/policy-check.sh
+   # or: python scripts/policy-enforcement-agent.py
    ```
 
 3. **Simulate promotion**
    ```bash
    ./scripts/promote.sh dev stage
+   # or: ./scripts/bootstrap.sh
    ```
 
-4. **Observe result:**
+4. **Inspect promotion result** — observe blocked or approved outcome
+
+5. **Example output (blocked):**
    ```
    ❌ Promotion Blocked
    Reason:
@@ -58,7 +62,7 @@ Fast, scannable, demo-friendly golden path:
    - Approval missing
    ```
 
-5. **Fix issue and re-run promotion**
+6. **Fix issue and re-run promotion**
 
 ---
 
@@ -74,13 +78,13 @@ Fast, scannable, demo-friendly golden path:
 
 ---
 
-## 🚫 What Blocks Promotion to Production
+## What Blocks Promotion to Production
 
 Promotion will fail if:
 
-- Policy violations detected
-- Required approvals missing
-- Drift detected between Git and cluster
+- Failed policy checks
+- Missing manual approval
+- Detected drift between Git and cluster
 - Artifact mismatch or unverified image
 
 ---
@@ -96,7 +100,7 @@ Promotion will fail if:
 | **Observability** | Deployment timeline, drift, DORA metrics | Post-deploy; visibility |
 | **AI Recommendations Tab** | App health, optimizations, fixes in Argo CD UI | Review; remediation hints |
 
-These form **one system** — a GitOps control plane with promotion, policy, and visibility.
+These form **one system** — a GitOps control plane with deterministic promotion workflow, policy enforcement, and visibility.
 
 ---
 
@@ -153,16 +157,20 @@ FAIL: image uses 'latest' tag — must be pinned
 
 ### Quick Start (2 minutes)
 
-- `./scripts/validate.sh` — validate platform structure and manifests
-- `./scripts/policy-check.sh` — run policy checks
+```bash
+./scripts/validate.sh
+./scripts/policy-check.sh
+```
 
 Inspect `platform/`, `platform/apps/`, `platform/environments/`. See [docs/example-outputs/](docs/example-outputs/) for expected output.
 
 ### Platform Demo (5 minutes)
 
-- **validate** → `./scripts/validate.sh` and `./scripts/policy-check.sh`
-- **promote** → `./scripts/promote.sh dev stage` (or `./scripts/promote.sh stage prod`)
-- **observe result** → policy failures, promotion blocked, drift reports
+1. `./scripts/validate.sh`
+2. `./scripts/policy-check.sh` or `python scripts/policy-enforcement-agent.py`
+3. `./scripts/bootstrap.sh` or `./scripts/promote.sh dev stage`
+4. Inspect promotion result (blocked or approved)
+5. See [5-Minute Platform Demo](#5-minute-platform-demo) above for full flow
 
 ### Deployment (Advanced)
 
@@ -180,43 +188,26 @@ kubectl apply -f platform/argo/
 
 ## Platform Consumers
 
-This platform **governs and deploys** application repositories such as:
+This repo is the **control plane** that governs and promotes application repositories:
 
 - [demo-github-argo-insecure-app](https://github.com/LongTheta/demo-github-argo-insecure-app)
 - [demo-gitlab-argo-insecure-app](https://gitlab.com/LongTheta/demo-gitlab-argo-insecure-app)
 
-These application repos:
-
-- Define workloads and CI/CD behavior
-- Are validated by policy enforcement
-- Are promoted through environments by this platform
-- Are deployed via Argo CD
-
-Each app has `platform/apps/<app>/source.yaml` (metadata), overlays (dev/stage/prod), and Argo CD Applications in `platform/argo/applications/`.
+These application repos define workloads and CI/CD; this platform validates, promotes, and deploys them via Argo CD.
 
 ---
 
 ## How the Repos Connect
 
 ```
-Application Repo (demo-github-argo-insecure-app, etc.)
-        │
-        ▼
-Policy Enforcement (scripts/policy-check.sh, AI agent)
-        │
-        ▼
-Platform Promotion Workflow (scripts/promote.sh, GitOps Promoter)
-        │
-        ▼
-Argo CD (syncs desired state from this platform repo)
-        │
-        ▼
-Cluster (dev, stage, prod namespaces)
+Application Repo → Policy Enforcement → GitOps Platform → Argo CD → Cluster
 ```
 
-1. **App repos are separate** from this platform repo — they define application code and manifests.
-2. **This repo is the control plane** — it references app manifests, applies overlays, and governs promotion.
-3. **AI enforcement** can plug in before promotion (PR validation, remediation comments).
+- **Application Repo** — defines app code and manifests
+- **Policy Enforcement** — `scripts/policy-check.sh`, `scripts/policy-enforcement-agent.py`
+- **GitOps Platform** — this repo; promotion workflow, overlays, approvals
+- **Argo CD** — syncs desired state to clusters
+- **Cluster** — dev, stage, prod namespaces
 
 ---
 
