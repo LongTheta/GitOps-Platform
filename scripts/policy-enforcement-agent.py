@@ -53,6 +53,11 @@ def main():
     print()
     print("==> Rule: resource-limits (all containers must have limits)")
     for deploy in repo_root.glob("platform/apps/*/base/deployment.yaml"):
+        # Skip intentionally insecure demo apps (policy enforcement demo)
+        app_name = deploy.parent.parent.name
+        if "insecure" in app_name:
+            print(f"  SKIP: {deploy} (intentionally insecure demo app)")
+            continue
         content = deploy.read_text(errors="replace")
         if "limits:" not in content:
             errors.append(f"  ERROR: {deploy} missing resource limits")
