@@ -19,5 +19,6 @@ patches:
             containers:
               - name: backend-service
                 image: example.com/backend-service:staging
-commonLabels:
-  environment: stage
+labels:
+  - pairs:
+      environment: stage

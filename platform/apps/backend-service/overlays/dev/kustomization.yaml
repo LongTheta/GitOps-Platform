@@ -19,5 +19,6 @@ patches:
             containers:
               - name: backend-service
                 image: example.com/backend-service:dev
-commonLabels:
-  environment: dev
+labels:
+  - pairs:
+      environment: dev

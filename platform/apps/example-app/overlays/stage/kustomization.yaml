@@ -19,5 +19,6 @@ patches:
             containers:
               - name: example-app
                 image: example.com/example-app:staging
-commonLabels:
-  environment: stage
+labels:
+  - pairs:
+      environment: stage

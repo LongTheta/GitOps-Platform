@@ -20,5 +20,6 @@ patches:
             containers:
               - name: backend-service
                 image: example.com/backend-service@sha256:0000000000000000000000000000000000000000000000000000000000000000
-commonLabels:
-  environment: prod
+labels:
+  - pairs:
+      environment: prod

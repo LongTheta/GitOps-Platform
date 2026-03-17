@@ -19,5 +19,6 @@ patches:
             containers:
               - name: example-app
                 image: example.com/example-app:dev
-commonLabels:
-  environment: dev
+labels:
+  - pairs:
+      environment: dev

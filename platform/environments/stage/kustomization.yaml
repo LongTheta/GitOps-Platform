@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - ../../apps/example-app/overlays/stage
   - ../../apps/backend-service/overlays/stage
-commonLabels:
-  environment: stage
+labels:
+  - pairs:
+      environment: stage
