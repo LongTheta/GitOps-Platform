@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "GitOps_Platform",
+  "project_id": "27d09a8a-c047-4da4-9c5c-1d84e1a15846"
+}
