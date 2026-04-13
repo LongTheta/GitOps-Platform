@@ -1,12 +1,12 @@
 # Skills Installer
 
-Provisions Cursor/Agent Skills to code-server for low-side and high-side environments. Configures Git for clone/push operations.
+Provisions Agent Skills to code-server for low-side and high-side environments. Configures Git for clone/push operations.
 
 ## Overview
 
 | Component | Purpose |
 |-----------|---------|
-| **Skills-installer** | Copies skill folders to `.cursor/skills/`; runs setup-binaries and setup-git |
+| **Skills-installer** | Copies skill folders to `~/.agent/skills/`; runs setup-binaries and setup-git |
 | **ConfigMap** | Non-sensitive config: baseDomain, GITLAB_URL, GIT_USER_NAME, GIT_USER_EMAIL |
 | **Secret** | GITLAB_TOKEN (PAT); store separately from ConfigMap |
 | **setup-git** | Configures Git from env vars |
@@ -15,7 +15,7 @@ Provisions Cursor/Agent Skills to code-server for low-side and high-side environ
 
 | ID | Requirement |
 |----|-------------|
-| TR-SK-1 | Provision skill folders to `.cursor/skills/` or `.agents/skills/` |
+| TR-SK-1 | Provision skill folders to `~/.agent/skills/` or `.agents/skills/` |
 | TR-SK-2 | Support low-side (clone from GitLab) and high-side (pre-synced copy) |
 | TR-SK-3 | Inject ConfigMap as env vars |
 | TR-SK-4 | Inject Secret separately from ConfigMap |

@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup-skills: Provision Skills to .cursor/skills/ or .agents/skills/
+# setup-skills: Provision Skills to ~/.agent/skills/ or .agents/skills/
 # Low-side: clone from GITLAB_URL. High-side: copy from pre-synced path.
 #
 # Env vars: GITLAB_URL, GITLAB_TOKEN, SKILLS_REPO_PATH (optional)
@@ -7,7 +7,7 @@
 
 set -e
 
-SKILLS_DIR="${HOME}/.cursor/skills"
+SKILLS_DIR="${HOME}/.agent/skills"
 mkdir -p "$SKILLS_DIR"
 
 if [ -n "$SKILLS_REPO_PATH" ] && [ -d "$SKILLS_REPO_PATH" ]; then
